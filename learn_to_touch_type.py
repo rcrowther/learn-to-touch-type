@@ -131,7 +131,7 @@ class MyWindow(Gtk.Window):
     ## mirror file chooser
 
     def __init__(self):
-        Gtk.Window.__init__(self, title="Keyboard Trainer")
+        Gtk.Window.__init__(self, title="Lear To Touch-Type")
         #self.set_border_width(10)
         # Try opening with enough size not to bother users with other
         # controls
@@ -146,19 +146,15 @@ class MyWindow(Gtk.Window):
         button_clear = Gtk.ToolItem()
         button_clear_button = Gtk.Button("Remove Typing")
         button_clear.add(button_clear_button)        
-
-        #button_clear = Gtk.ToolButton()
-        #button_bold.set_icon_name("format-text-bold-symbolic")
-        #button_clear.set_icon_name("edit-clear")
         toolbar.insert(button_clear, 0)
         button_clear_button.connect("clicked", self.on_clear_clicked)
         #        toolbar.insert(Gtk.SeparatorToolItem(), 10)
         
         #button_extended_symbols = Gtk.ToggleToolButton()
         button_extended_symbols = Gtk.ToolItem()
-        button_extended_button = Gtk.ToggleButton("Display Extra Keys")
+        self.button_extended_button = Gtk.ToggleButton("Show Special Keys")
         #button_extended_label = Gtk.Label.new("Clear Text")
-        button_extended_symbols.add(button_extended_button)        
+        button_extended_symbols.add(self.button_extended_button)        
         #button.connect("toggled", self.on_button_toggled, "1")
         #hbox.pack_start(button, True, True, 0)
         toolbar.insert(button_extended_symbols, 0)
@@ -216,9 +212,19 @@ class MyWindow(Gtk.Window):
         #print(str(event.keyval))
         ## for mod keys
         #print(str(event.state))
-
-        self.insert(fullMap[event.keyval])        
-        self.insert(' ')
+        textToAdd = None
+        try:
+            if (self.button_extended_button.get_active()):
+                textToAdd = fullMap[event.keyval]
+            else:
+                textToAdd = mnemonicMap[event.keyval]
+        except:
+            pass
+        if (textToAdd):
+            self.insert(textToAdd)       
+            self.insert(' ')
+        else:
+           pass
         #! must be enabled, but not confirmed
         #Gdk.EventMask.KEY_PRESS_MASK 
         return True
