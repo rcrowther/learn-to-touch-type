@@ -13,12 +13,11 @@ from gi.repository import Gdk
 
 #! Needs keyboard layout adjustment - where is the GDK alias wrap?
 #! Needs non-fail stop
+#! handle missed keys
 #! Needs adjustable charmap
 #! fonts for pictures?
 #! lowercase
 #! modifiers
-#! get focus back after clear
-#! Button to enable Symbols
 #! Enable position display, or something else, in the statusbar
 #? gray background like Gedit
 
