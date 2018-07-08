@@ -150,15 +150,11 @@ class MyWindow(Gtk.Window):
         button_clear_button.connect("clicked", self.on_clear_clicked)
         #        toolbar.insert(Gtk.SeparatorToolItem(), 10)
         
-        #button_extended_symbols = Gtk.ToggleToolButton()
         button_extended_symbols = Gtk.ToolItem()
         self.button_extended_button = Gtk.ToggleButton("Show Special Keys")
-        #button_extended_label = Gtk.Label.new("Clear Text")
         button_extended_symbols.add(self.button_extended_button)        
-        #button.connect("toggled", self.on_button_toggled, "1")
-        #hbox.pack_start(button, True, True, 0)
         toolbar.insert(button_extended_symbols, 0)
-        #button_extended_symbols.connect("toggled", self.on_extended_toggled, self.tag_bold)
+        self.button_extended_button.connect("toggled", self.on_extended_symbols_clicked)
 
         self.createTextView()
         self.createStatusbar()
@@ -168,6 +164,7 @@ class MyWindow(Gtk.Window):
 
     def init_text_view(self):
         self.insert('Start...\n')
+        self.textView.grab_focus()
     
     def createTextView(self):
         scrollwin = Gtk.ScrolledWindow.new()
@@ -196,12 +193,15 @@ class MyWindow(Gtk.Window):
         self.posDisplay.set_text('Ln:1 Col:1')
         self.statusBar.pack_end(self.posDisplay, False, True, 24)
 
+    def on_extended_symbols_clicked(self, widget):
+        self.textView.grab_focus()
+
     def on_clear_clicked(self, widget):
         start = self.textBuffer.get_start_iter()
         end = self.textBuffer.get_end_iter()
         self.textBuffer.delete(start, end)
         self.init_text_view()
-
+        
     def insert(self, string):
         Gtk.TextView.do_insert_at_cursor(self.textView,  string) 
         
