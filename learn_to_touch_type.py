@@ -17,7 +17,7 @@ from gi.repository import Gdk
 #! fonts for pictures?
 #! lowercase
 #! modifiers
-#! clear button
+#! get focus back after clear
 #! Button to enable Symbols
 #! Enable position display, or something else, in the statusbar
 #? gray background like Gedit
@@ -140,6 +140,40 @@ class MyWindow(Gtk.Window):
         self.box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         self.add(self.box)
 
+        toolbar = Gtk.Toolbar()
+        self.box.pack_start(toolbar, False, True, 0)
+        
+        button_clear = Gtk.ToolItem()
+        button_clear_button = Gtk.Button("Remove Typing")
+        button_clear.add(button_clear_button)        
+
+        #button_clear = Gtk.ToolButton()
+        #button_bold.set_icon_name("format-text-bold-symbolic")
+        #button_clear.set_icon_name("edit-clear")
+        toolbar.insert(button_clear, 0)
+        button_clear_button.connect("clicked", self.on_clear_clicked)
+        #        toolbar.insert(Gtk.SeparatorToolItem(), 10)
+        
+        #button_extended_symbols = Gtk.ToggleToolButton()
+        button_extended_symbols = Gtk.ToolItem()
+        button_extended_button = Gtk.ToggleButton("Display Extra Keys")
+        #button_extended_label = Gtk.Label.new("Clear Text")
+        button_extended_symbols.add(button_extended_button)        
+        #button.connect("toggled", self.on_button_toggled, "1")
+        #hbox.pack_start(button, True, True, 0)
+        toolbar.insert(button_extended_symbols, 0)
+        #button_extended_symbols.connect("toggled", self.on_extended_toggled, self.tag_bold)
+
+        self.createTextView()
+        self.createStatusbar()
+    
+        # take the edge off of that whiteout start 
+        self.init_text_view()
+
+    def init_text_view(self):
+        self.insert('Start...\n')
+    
+    def createTextView(self):
         scrollwin = Gtk.ScrolledWindow.new()
         scrollwin.set_property("vscrollbar-policy", Gtk.PolicyType.ALWAYS)
         # leave horizontal scrollbar on Gtk.PolicyTypeAUTO
@@ -155,17 +189,9 @@ class MyWindow(Gtk.Window):
         self.textView.set_property("right_margin", 4)
 
         #? currently unused
-        self.buffer = self.textView.get_buffer()
+        self.textBuffer = self.textView.get_buffer()
         scrollwin.add(self.textView)
-
-        self.createStatusbar()
-    
         self.textViewKeypress = self.textView.connect("key-press-event", self.keyPress)
-        # tske the edge off of that whiteout start 
-        self.insert('Start...\n')
-    
-    def insert(self, string):
-        Gtk.TextView.do_insert_at_cursor(self.textView,  string) 
 
     def createStatusbar(self):
         self.statusBar = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
@@ -173,6 +199,15 @@ class MyWindow(Gtk.Window):
         self.posDisplay = Gtk.Label().new()
         self.posDisplay.set_text('Ln:1 Col:1')
         self.statusBar.pack_end(self.posDisplay, False, True, 24)
+
+    def on_clear_clicked(self, widget):
+        start = self.textBuffer.get_start_iter()
+        end = self.textBuffer.get_end_iter()
+        self.textBuffer.delete(start, end)
+        self.init_text_view()
+
+    def insert(self, string):
+        Gtk.TextView.do_insert_at_cursor(self.textView,  string) 
         
     def keyPress(self, widget, event):
         #https://lazka.github.io/pgi-docs/Gdk-3.0/classes/EventKey.html#Gdk.EventKey
