@@ -12,15 +12,16 @@ from gi.repository import Gdk
 
 
 #! Needs keyboard layout adjustment - where is the GDK alias wrap?
+#! make 'Enable backspace and newline' button
 #! Needs non-fail stop
 #! handle missed keys
 #! Needs adjustable charmap
 #! fonts for pictures?
-#! lowercase
 #! modifiers
 #! Enable position display, or something else, in the statusbar
 #? gray background like Gedit
 #? enable backspace
+#? Some form of zoom?
 
 #extraSymbols = {
 #chr(32) : '[space]',
@@ -70,20 +71,26 @@ from gi.repository import Gdk
 
 # If wrapped and where, I dunno
 # https://github.com/tindzk/GTK/blob/master/gdk/gdkkeysyms.h
-        
-symbols = {
+
+BASIC_CONTROLS = {
 32 : '[space]',
-65289 : '[tab]',
-65307 : '[esc]',
 65293 : '[newline/enter]',
 65288 : '[go back]',
+}
+        
+EXTENDED_CONTROLS = {
+65289 : '[tab]',
+#65307 : '[esc]',
 65363 : '[go right]',
 65361 : '[go left]',
 65362 : '[go up]',
 65364 : '[go down]',
 }
 
-mnemonicMap = {
+TYPE_NAVIGATION_CONTROLS = BASIC_CONTROLS.copy()
+TYPE_NAVIGATION_CONTROLS.update(EXTENDED_CONTROLS)
+
+MNEMONIC_MAP = {
 81 : 'Quiet',
 65 : 'And',
 90 : 'laZy',
@@ -148,8 +155,8 @@ mnemonicMap = {
 }
 
 # Python <3.5
-fullMap = mnemonicMap.copy()
-fullMap.update(symbols)
+FULL_MAP = MNEMONIC_MAP.copy()
+FULL_MAP.update(TYPE_NAVIGATION_CONTROLS)
 #print(fullMap)
 # Python 3.5+
 #fullMap = {**textMap, **extraSymbols}
@@ -162,7 +169,7 @@ class MyWindow(Gtk.Window):
     ## mirror file chooser
 
     def __init__(self):
-        Gtk.Window.__init__(self, title="Lear To Touch-Type")
+        Gtk.Window.__init__(self, title="Learn To Touch-Type")
         #self.set_border_width(10)
         # Try opening with enough size not to bother users with other
         # controls
@@ -174,18 +181,25 @@ class MyWindow(Gtk.Window):
         toolbar = Gtk.Toolbar()
         self.box.pack_start(toolbar, False, True, 0)
         
-        button_clear = Gtk.ToolItem()
-        button_clear_button = Gtk.Button("Remove Typing")
-        button_clear.add(button_clear_button)        
-        toolbar.insert(button_clear, 0)
-        button_clear_button.connect("clicked", self.on_clear_clicked)
+        toolitem_clear = Gtk.ToolItem()
+        button_clear = Gtk.Button("Remove Typing")
+        toolitem_clear.add(button_clear)        
+        toolbar.insert(toolitem_clear, 0)
+        button_clear.connect("clicked", self.on_clear_clicked)
         #        toolbar.insert(Gtk.SeparatorToolItem(), 10)
         
-        button_extended_symbols = Gtk.ToolItem()
-        self.button_extended_button = Gtk.ToggleButton("Show Special Keys")
-        button_extended_symbols.add(self.button_extended_button)        
-        toolbar.insert(button_extended_symbols, 0)
-        self.button_extended_button.connect("toggled", self.on_extended_symbols_clicked)
+        toolitem_print_controls = Gtk.ToolItem()
+        self.button_print_controls = Gtk.ToggleButton("Print Control Keys")
+        toolitem_print_controls.add(self.button_print_controls)        
+        toolbar.insert(toolitem_print_controls, 0)
+        self.button_print_controls.connect("toggled", self.on_print_controls_clicked)
+
+       
+        toolitem_use_basic_controls = Gtk.ToolItem()
+        self.button_use_basic_controls = Gtk.ToggleButton("Use Basic Controls")
+        toolitem_use_basic_controls.add(self.button_use_basic_controls)        
+        toolbar.insert(toolitem_use_basic_controls, 0)
+        self.button_use_basic_controls.connect("toggled", self.on_use_basic_controls_clicked)
 
         self.createTextView()
         self.createStatusbar()
@@ -228,9 +242,18 @@ class MyWindow(Gtk.Window):
         self.posDisplay.set_text('Ln:1 Col:1')
         self.statusBar.pack_end(self.posDisplay, False, True, 24)
 
-    def on_extended_symbols_clicked(self, widget):
+    def on_print_controls_clicked(self, widget):
+        # logic like a radio button, with none ooption
+        if (self.button_print_controls.get_active()):
+            self.button_use_basic_controls.set_active(False)
         self.textView.grab_focus()
 
+    def on_use_basic_controls_clicked(self, widget):
+        # logic like a radio button, with none ooption
+        if (self.button_use_basic_controls.get_active()):
+            self.button_print_controls.set_active(False)
+        self.textView.grab_focus()
+        
     def on_clear_clicked(self, widget):
         start = self.textBuffer.get_start_iter()
         end = self.textBuffer.get_end_iter()
@@ -242,17 +265,17 @@ class MyWindow(Gtk.Window):
         
     def keyPress(self, widget, event):
         #https://lazka.github.io/pgi-docs/Gdk-3.0/classes/EventKey.html#Gdk.EventKey
-        print(str(widget))
-        print(str(event))
-        print(str(event.keyval))
+        #print(str(widget))
+        #print(str(event))
+        #print(str(event.keyval))
         ## for mod keys
         #print(str(event.state))
         textToAdd = None
         try:
-            if (self.button_extended_button.get_active()):
-                textToAdd = fullMap[event.keyval]
+            if (self.button_print_controls.get_active()):
+                textToAdd = FULL_MAP[event.keyval]
             else:
-                textToAdd = mnemonicMap[event.keyval]
+                textToAdd = MNEMONIC_MAP[event.keyval]
         except:
             pass
         if (textToAdd):
@@ -260,8 +283,15 @@ class MyWindow(Gtk.Window):
             self.insert(' ')
         else:
            pass
-        #! must be enabled, but not confirmed
-        #Gdk.EventMask.KEY_PRESS_MASK 
+
+        # sometimes, allow a few naviagtion keys to do their work...
+        if(
+            self.button_use_basic_controls.get_active() 
+            and (event.keyval in BASIC_CONTROLS)
+        ):
+            return False 
+
+        # ...but mostly, stop every key action.
         return True
         
         
