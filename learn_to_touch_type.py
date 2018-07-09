@@ -20,6 +20,7 @@ from gi.repository import Gdk
 #! modifiers
 #! Enable position display, or something else, in the statusbar
 #? gray background like Gedit
+#? enable backspace
 
 #extraSymbols = {
 #chr(32) : '[space]',
@@ -83,6 +84,37 @@ symbols = {
 }
 
 mnemonicMap = {
+81 : 'Quiet',
+65 : 'And',
+90 : 'laZy',
+87 : 'Washup',
+83 : 'Says',
+88 : 'eXpert',  
+69 : 'Eggs',
+68 : 'Do',
+67 : 'Cook', 
+82 : 'Run',
+70 : 'From',
+86 : 'Vaccum', 
+84 : 'To',
+71 : 'Get',
+66 : 'Bath', 
+89 : 'Yogurt',
+72 : 'Honey',
+78 : 'Nuts', 
+85 : 'Under',
+74 : 'Jam',
+77 : 'Marmalade', 
+73 : 'In',
+75 : 'Kettle',
+60 : '[pin left]', 
+79 : 'Old',
+76 : 'Lemon',
+62 : '[pin right]', 
+80 : 'Prayer',
+58 : '[long wait]',
+63 : '[question]', 
+# lowercase
 113 : 'Quiet',
 97 : 'And',
 122 : 'laZy',
@@ -112,7 +144,7 @@ mnemonicMap = {
 46 : '[stop]', 
 112 : 'Prayer',
 59 : '[wait]',
-47 : '[question]', 
+47 : '[forward slash]', 
 }
 
 # Python <3.5
@@ -158,10 +190,14 @@ class MyWindow(Gtk.Window):
         self.createTextView()
         self.createStatusbar()
     
-        # take the edge off of that whiteout start 
         self.init_text_view()
 
     def init_text_view(self):
+        '''
+        Actions on start or clear.
+        Takes the edge off a whiteout start by adding a message. Moves
+        focus to typing area.
+        '''
         self.insert('Start...\n')
         self.textView.grab_focus()
     
@@ -206,9 +242,9 @@ class MyWindow(Gtk.Window):
         
     def keyPress(self, widget, event):
         #https://lazka.github.io/pgi-docs/Gdk-3.0/classes/EventKey.html#Gdk.EventKey
-        #print(str(widget))
-        #print(str(event))
-        #print(str(event.keyval))
+        print(str(widget))
+        print(str(event))
+        print(str(event.keyval))
         ## for mod keys
         #print(str(event.state))
         textToAdd = None
