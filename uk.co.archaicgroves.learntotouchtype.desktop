@@ -1,0 +1,12 @@
+
+[Desktop Entry]
+Type=Application
+Version=0.0.1
+Name=Learn To Touch Type
+Comment=For absolute beginners
+Encoding=UTF-8
+Categories=GTK;Education;Utility;
+Exec=learntotouchtype
+Icon=learntotouchtype
+Terminal=false
+StartupNotify=true

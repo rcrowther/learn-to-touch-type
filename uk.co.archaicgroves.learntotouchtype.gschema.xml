@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="gsettings-desktop-schemas">
+  <schema path="/uk/co/archaicgroves/learntotouchtype/" id="uk.co.archaicgroves.learntotouchtype">
+    <!-- a(username, a(key, val)) -->
+    <key type="a(sa(is))" name="data">
+      <default>[]</default>
+      <summary>Data for each user</summary>
+      <description>Data, such as alternate mnemonics, for each user.</description>
+    </key>
+  </schema>
+</schemalist>
