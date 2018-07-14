@@ -137,7 +137,7 @@ MNEMONIC_MAP = {
     99 : 'Cook', 
     114 : 'Run',
     102 : 'From',
-    118 : 'Vaccum', 
+    118 : 'Vacuum', 
     116 : 'To',
     103 : 'Get',
     98 : 'Bath', 
