@@ -2,6 +2,8 @@ Learn To Touch Type
 ===================
 Python-GTK GUI for learning how to touch-type.
 
+See also `Learn To Touch Type Keys`_.
+
 Requires
 ~~~~~~~~
 Python3, GTK environment.
@@ -14,7 +16,7 @@ About
 ~~~~~
 This 
 
-.. figure:: https://raw.githubusercontent.com/rcrowther/learn-to-touch-type/master/text/LearnToTouchType.jpg
+.. figure:: https://raw.githubusercontent.com/rcrowther/learn-to-touch-type/master/text/LearnToTouchType.png
     :width: 132 px
     :alt: LearnToTouchType screenshot
     :align: center
@@ -26,3 +28,7 @@ This GUI is intended for those who have never used a computer keyboard. It may s
 Which is not to say it needs no more work, because it does. And when will GTK sort itself out? After they deprecate the entire codebase?
 
 Hint: the buttons are for tutors.
+
+See also `Learn To Touch Type Keys`_ , a sister program to this. It looks much the same but works differently. And has no desktop install. Both programs are useful (use this first, move on to `Learn To Touch Type Keys`_ ).
+
+.. _Learn To Touch Type Keys: https://github.com/rcrowther/learn-to-touch-type-keys

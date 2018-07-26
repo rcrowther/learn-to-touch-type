@@ -288,7 +288,7 @@ class MyWindow(Gtk.Window):
         #
         # Ten years later, GTK progresses yet by exploring every pit 
         # of shit before deciding a plank may be a good idea.
-        # No wonder---Geany uses Scitie.
+        # No wonder---Geany uses Scintilla.
         cp = self.textBuffer.get_property("cursor-position")
         itStart = self.textBuffer.get_iter_at_offset(cp)
         itEnd = self.textBuffer.get_iter_at_offset(cp)
